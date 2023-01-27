@@ -1,5 +1,7 @@
 <?php include "inc/header.php" ?>
-<?php include "inc/menubar.php" ?>
+<?php include "inc/menubar.php" ;
+
+?>
 
   <main id="main" class="main">
 
@@ -22,31 +24,44 @@
               <h5 class="card-title">Add New Category</h5>
 
               <!-- No Labels Form -->
-              <form class="row g-3">
+              <form class="row g-3" action='core/insert.php' method="POST" enctype="multipart/form-data" >
                 <div class="col-md-12">
-                  <input type="text" class="form-control" placeholder="Category Name">
+                  <input type="text" class="form-control" placeholder="Category Name" name="catName" >
                 </div>
                 <div class="col-md-12">
-                  <select id="inputState" class="form-select">
-                    <option selected="">Choose...</option>
-                    <option> Electronic</option>
-                    <option> Cloths</option>
-                    <option> Sports</option>
+                  <small> Choose your parent catagory If any </small>
+                  <select id="inputState" class="form-select"  name="isParent">
+                    <option selected="" >Choose category...</option>
+                    
+                <?php
+                  $radCatSql = "SELECT * FROM mart_category WHERE is_parent = 0 ORDER BY c_name ASC";
+                  $readCatResult = mysqli_query($db, $radCatSql);
+                  $serial = 0;
+
+                  while($row = mysqli_fetch_assoc($readCatResult)){
+                    $cat_id     =   $row['ID'];
+                    $c_name     =   $row['c_name'];
+                ?>
+
+                    <option value="<?php echo $cat_id; ?>"> <?php echo $c_name; ?></option>
+                <?php
+                  }
+                ?>
                   </select>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-12 codepen-img">
+				          <small> Choose your catagory image </small>
                 <div class="box">
                     <div class="js--image-preview"></div>
                         <div class="upload-options">
                         <label>
-                            <input type="file" class="image-upload" accept="image/*" />
+                            <input type="file" class="image-upload" accept="image/*" name="catImg"/>
                         </label>
                         </div>
                     </div>
                 </div>
                 <div class="text-start">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                  <button type="reset" class="btn btn-secondary">Reset</button>
+                  <button type="submit" class="btn btn-primary" name="catSubmit">Submit</button>
                 </div>
               </form><!-- End No Labels Form -->
 
@@ -64,49 +79,69 @@
                 <table class="table table-striped">
                 <thead>
                     <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Position</th>
-                    <th scope="col">Age</th>
-                    <th scope="col">Start Date</th>
+                    <th scope="col">SL</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Category Name</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                <?php
+                  $radCatSql = "SELECT * FROM mart_category WHERE is_parent = 0 ";
+                  $readCatResult = mysqli_query($db, $radCatSql);
+                  $serial = 0;
+
+                  while($row = mysqli_fetch_assoc($readCatResult)){
+                    $cat_id         =   $row['ID'];
+                    $c_name     =   $row['c_name'];
+                    $c_image    =   $row['c_image'];
+                    $is_parent  =   $row['is_parent'];
+                    $c_status   =   $row['c_status'];
+                    $serial++;
+                ?>
                     <tr>
-                    <th scope="row">1</th>
-                    <td>Brandon Jacob</td>
-                    <td>Designer</td>
-                    <td>28</td>
-                    <td>2016-05-25</td>
+                    <th scope="row"><?php echo $serial; ?></th>
+                    <td>
+                      <img src="assets/img/product/category/<?php echo $c_image; ?>" width="60" alt="">
+                    </td>
+                    <td><?php echo $c_name; ?></td>
+                    <td><?php if($c_status == 0) echo '<span class="badge bg-danger"> In-active <span>'; else echo "<span class='badge bg-success'> Active <span>" ?> </td>
+                    <td>
+                      <a href="#"><i class="bi bi-pen-fill text-black"></i></a>
+                      <a href="#"><i class="bi bi-trash3-fill text-danger"></i></a>
+                    </td>
                     </tr>
+                <?php
+                  //find sub category
+                  $readSubSql = "SELECT * FROM mart_category WHERE is_parent = '$cat_id' ";
+                  $readSubResult = mysqli_query($db, $readSubSql);
+                  $serial = 0;
+
+                  while($row = mysqli_fetch_assoc($readSubResult)){
+                    $cat_id     =   $row['ID'];
+                    $c_name     =   $row['c_name'];
+                    $c_image    =   $row['c_image'];
+                    $c_status   =   $row['c_status'];
+                    $serial++;
+                    ?>
                     <tr>
-                    <th scope="row">2</th>
-                    <td>Bridie Kessler</td>
-                    <td>Developer</td>
-                    <td>35</td>
-                    <td>2014-12-05</td>
+                    <th scope="row"><?php echo "<span class='fw-normal'>$serial </span>" ; ?></th>
+                    <td>
+                      <img src="assets/img/product/category/<?php echo $c_image; ?>" width="60" alt="">
+                    </td>
+                    <td><?php echo '<i class="bi bi-arrow-90deg-up"></i>'.$c_name; ?></td>
+                    <td><?php if($c_status == 0) echo '<span class="badge bg-danger"> In-active <span>'; else echo "<span class='badge bg-success'> Active <span>" ?> </td>
+                    <td>
+                      <a href="#"><i class="bi bi-pen-fill text-black"></i></a>
+                      <a href="#"><i class="bi bi-trash3-fill text-danger"></i></a>
+                    </td>
                     </tr>
-                    <tr>
-                    <th scope="row">3</th>
-                    <td>Ashleigh Langosh</td>
-                    <td>Finance</td>
-                    <td>45</td>
-                    <td>2011-08-12</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">4</th>
-                    <td>Angus Grady</td>
-                    <td>HR</td>
-                    <td>34</td>
-                    <td>2012-06-11</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">5</th>
-                    <td>Raheem Lehner</td>
-                    <td>Dynamic Division Officer</td>
-                    <td>47</td>
-                    <td>2011-04-19</td>
-                    </tr>
+                  <?php
+                  }
+                }
+                
+                ?>   
                 </tbody>
                 </table>
                 <!-- End Table with stripped rows -->
