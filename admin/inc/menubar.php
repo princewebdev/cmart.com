@@ -133,7 +133,7 @@
             </a>
           </li>
           <li>
-            <a href="charts-apexcharts.html">
+            <a href="brand.php">
               <i class="bi bi-circle"></i><span>Brands</span>
             </a>
           </li>

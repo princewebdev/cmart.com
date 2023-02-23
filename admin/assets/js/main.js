@@ -316,6 +316,9 @@
       }).observe(mainContainer);
     }, 200);
   }
+// /////////////////////////////////////////////////////
+ //Custom Js start here 
+ //////////////////////////
 
   //File upload js here
   function initImageUpload(box) {

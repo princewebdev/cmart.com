@@ -1,8 +1,6 @@
 <?php 
   ob_start();
   //require_once "connection.php";
-  include 'function.php';
-  include 'core/insert.php';
 ?>
 
 <!DOCTYPE html>
